@@ -60,6 +60,95 @@ After above complete, check **/etc/default/grub**, make sure **GRUB\_HIDDEN\_TIM
 $ upgrad-grub
 $ shutdown -r now
 ``` 
-### Create a blank document which simulate a nvme device 
+### Create a blank document which simulate a nvme device
+
+Back to host machine
+ 
 `$ dd if=/dev/zero of=blknvme bs=1M count=1024`
+
+Following is my boot shell script, make show all the things related are in the same directory.
+
+```
+#!/bin/bash
+# Boot vm
+
+sudo qemu-system-x86_64 -m 4G -smp 1 --enable-kvm \
+-drive file=blknvme,if=none,id=mynvme \
+-redir tcp:37812::22 \ (for ssh connection between host and guest)
+-device nvme,drive=mynvme,serial=deadbeef,namespaces=1,lver=1,lmetasize=16,ll2pmode=0,nlbaf=5,lba_index=3,mdts=10,lnum_lun=16,lnum_pln=2,lsec_size=4096,lsecs_per_pg=4,lpgs_per_blk=512,lbbtable=bbtable.qemu,lmetadata=meta.qemu,ldebug=1 \
+ubuntu.raw
+```
+### Install nvme-cli on guest to feel Lightnvm work
+
+Now, we have 
+- a kernel which support *lightnvm* and support *nvme* device.
+- a nvme device(simulated by qemu)
+
+so, we need a tools to manage and control our device, **nvme-cli** is suitable for us. Make sure you get a newest version(1.3.44 now) which support *nvme lnvm* command
+
+```
+$ git clone https://github.com/OpenChannelSSD/qemu-nvme.git
+$ cd qemu-nvme
+$ make -j2
+$ make install
+```
+So far we have finished. Now we can use the following command to detect our device and create a target on it.
+the following is my output:
+
+```
+$ nvme lnvm list
+Number of devices: 1
+Device      	Block manager	Version
+nvme0n1     	gennvm      	(1,0,0)
+
+$ nvme lnvm info
+LightNVM (1,0,0). 1 target type(s) registered.
+Type	Version
+pblk	(1,0,0)
+
+$ lsblk (list available blk devick)
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sr0      11:0    1 1024M  0 rom  
+fd0       2:0    1    4K  0 disk 
+sda       8:0    0   50G  0 disk 
+├─sda2    8:2    0    1K  0 part 
+├─sda5    8:5    0    2G  0 part [SWAP]
+└─sda1    8:1    0   48G  0 part /
+nvme0n1 259:0    0 1022M  0 disk (our nvme device)
+
+$ nvme lnvm create -d nvme0n1 -n mydevice -t pblk -b 0 -e 3(create a target on nvme device,name mydevice,lun0-lun4)
+
+$ lsblk 
+NAME     MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sr0       11:0    1 1024M  0 rom  
+fd0        2:0    1    4K  0 disk 
+mydevice 259:1    0  144M  0 disk (**target created by us**)
+sda        8:0    0   50G  0 disk 
+├─sda2     8:2    0    1K  0 part 
+├─sda5     8:5    0    2G  0 part [SWAP]
+└─sda1     8:1    0   48G  0 part /
+nvme0n1  259:0    0 1022M  0 disk 
+
+```
+
+### References
+[official docs](http://openchannelssd.readthedocs.io/en/latest/gettingstarted/)
+http://www.jianshu.com/p/8e11fa93411a
+https://hyunyoung2.github.io/2016/10/04/LightNVM_With_OpenChannelSSD_On_QEMU/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
