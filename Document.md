@@ -62,11 +62,11 @@ $ shutdown -r now
 ``` 
 ### Create a blank document which simulate a nvme device
 
-Back to host machine
+Back to host machine, create a blank document using:
  
 `$ dd if=/dev/zero of=blknvme bs=1M count=1024`
 
-Following is my boot shell script, make show all the things related are in the same directory.
+Using qemu to boot a VM, following is my boot shell script, make show all the things related are in the same directory.
 
 ```
 #!/bin/bash
@@ -132,8 +132,10 @@ nvme0n1  259:0    0 1022M  0 disk
 ```
 
 ### References
-[official docs](http://openchannelssd.readthedocs.io/en/latest/gettingstarted/)
+[Official docs](http://openchannelssd.readthedocs.io/en/latest/gettingstarted/)
+
 http://www.jianshu.com/p/8e11fa93411a
+
 https://hyunyoung2.github.io/2016/10/04/LightNVM_With_OpenChannelSSD_On_QEMU/
 
 
