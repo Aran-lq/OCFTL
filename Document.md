@@ -66,7 +66,7 @@ Back to host machine, create a blank document using:
  
 `$ dd if=/dev/zero of=blknvme bs=1M count=1024`
 
-Using qemu to boot a VM, following is my boot shell script, make show all the things related are in the same directory.
+Using qemu to boot a VM, following is my boot shell script, make sure all the things related are in the same directory.
 
 ```
 #!/bin/bash
