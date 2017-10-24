@@ -12,7 +12,7 @@ To get my goal, first step is to know about the detail of nvm and how it works o
 * configure the QEMU source and compile, install
 
 ```
-$ ./configure --enable-linux-aio --target-list=x86_64-softmmu --enable-kvm
+$ ./configure --python=/usr/bin/python2 --enable-kvm --target-list=x86_64-softmmu --enable-linux-aio --enable-debug(optional for gdb) --prefix=(dir of qemu) 
 $ make -j4
 $ make install
 ```  
@@ -74,7 +74,7 @@ Using qemu to boot a VM, following is my boot shell script, make sure all the th
 
 sudo qemu-system-x86_64 -m 4G -smp 1 --enable-kvm \
 -drive file=blknvme,if=none,id=mynvme \
--redir tcp:37812::22 \ (for ssh connection between host and guest)
+-redir tcp:37812::22 \ (for ssh connection between host and guest, port 37812)
 -device nvme,drive=mynvme,serial=deadbeef,namespaces=1,lver=1,lmetasize=16,ll2pmode=0,nlbaf=5,lba_index=3,mdts=10,lnum_lun=16,lnum_pln=2,lsec_size=4096,lsecs_per_pg=4,lpgs_per_blk=512,lbbtable=bbtable.qemu,lmetadata=meta.qemu,ldebug=1 \
 ubuntu.raw
 ```
