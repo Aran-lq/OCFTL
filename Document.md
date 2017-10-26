@@ -88,7 +88,7 @@ so, we need a tools to manage and control our device, **nvme-cli** is suitable f
 
 ```
 $ git clone https://github.com/linux-nvme/nvme-cli.git
-$ cd qemu-nvme
+$ cd nvme-cli
 $ make -j2
 $ make install
 ```
