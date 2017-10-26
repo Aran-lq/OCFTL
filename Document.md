@@ -87,7 +87,7 @@ Now, we have
 so, we need a tools to manage and control our device, **nvme-cli** is suitable for us. Make sure you get a newest version(1.3.44 now) which support *nvme lnvm* command
 
 ```
-$ git clone https://github.com/OpenChannelSSD/qemu-nvme.git
+$ git clone https://github.com/linux-nvme/nvme-cli.git
 $ cd qemu-nvme
 $ make -j2
 $ make install
