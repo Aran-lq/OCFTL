@@ -1,7 +1,7 @@
 ## 1. Configure lightnvm on nvme-qume
 To get my goal, first step is to know about the detail of nvm and how it works on a device based on qemu. The following is my configuration process:
 ### Configuration environment
-- host: linux 4.10, ubuntu17.04 
+- host: linux 4.10, ubuntu17.04(amd64) 
 - guest: ubuntu 16.04 on nvme-qemu.
 
 ### Install nvme-qemu
